@@ -153,6 +153,34 @@
             min-height: 100px;
         }
         
+        /* Table styles for the answer */
+        .answer-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 1rem;
+        }
+        
+        .answer-table th, .answer-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .answer-table th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: bold;
+        }
+        
+        .answer-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        .answer-table tr:hover {
+            background-color: #e6f2ff;
+        }
+        
         .help-text {
             font-size: 1.1rem;
             color: #666;
@@ -211,6 +239,14 @@
                 position: static;
                 margin-bottom: 15px;
                 text-align: center;
+            }
+            
+            .answer-table {
+                font-size: 0.9rem;
+            }
+            
+            .answer-table th, .answer-table td {
+                padding: 8px 10px;
             }
         }
     </style>
@@ -432,6 +468,61 @@
             });
         }
         
+        // Function to format response with tables if needed
+        function formatResponse(response) {
+            // Check if response contains table data (simple detection)
+            if (response.includes('|') && response.includes('-') && response.includes('\n')) {
+                // Try to convert markdown-style tables to HTML
+                const lines = response.split('\n');
+                let inTable = false;
+                let html = '';
+                
+                for (const line of lines) {
+                    if (line.trim().startsWith('|') && line.includes('|')) {
+                        if (!inTable) {
+                            // Start of table
+                            html += '<div class="table-responsive"><table class="answer-table">';
+                            inTable = true;
+                        }
+                        
+                        // Process table row
+                        const cells = line.split('|').map(cell => cell.trim()).filter(cell => cell);
+                        html += '<tr>';
+                        
+                        for (const cell of cells) {
+                            // Check if this is a header row (next line would be |---|)
+                            const isHeader = lines[lines.indexOf(line) + 1]?.includes('---');
+                            if (isHeader) {
+                                html += `<th>${cell}</th>`;
+                            } else {
+                                html += `<td>${cell}</td>`;
+                            }
+                        }
+                        
+                        html += '</tr>';
+                    } else if (inTable) {
+                        // End of table
+                        html += '</table></div>';
+                        inTable = false;
+                        html += `<p>${line}</p>`;
+                    } else {
+                        // Regular text
+                        html += `<p>${line}</p>`;
+                    }
+                }
+                
+                // Close table if still open
+                if (inTable) {
+                    html += '</table></div>';
+                }
+                
+                return html;
+            }
+            
+            // If no table detected, just return as paragraphs
+            return response.split('\n').map(para => `<p>${para}</p>`).join('');
+        }
+        
         // Language selector event
         languageSelector.addEventListener('change', (e) => {
             updateLanguage(e.target.value);
@@ -466,9 +557,10 @@
                 });
 
                 let result = await response.json();
-                document.getElementById("result").innerText = result.response || translations[currentLanguage].errorMessage;
+                const formattedResponse = formatResponse(result.response || translations[currentLanguage].errorMessage);
+                document.getElementById("result").innerHTML = formattedResponse;
             } catch (error) {
-                document.getElementById("result").innerText = translations[currentLanguage].errorMessage;
+                document.getElementById("result").innerHTML = `<p>${translations[currentLanguage].errorMessage}</p>`;
                 console.error("Error:", error);
             } finally {
                 // Reset button
