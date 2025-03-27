@@ -1,7 +1,7 @@
-# Agno AI - Senior-Friendly FD Rate Comparison Assistant
+#Senior-Friendly FD Rate Comparison Assistant
 
 ## Overview
-Agno AI is an AI-powered assistant designed to help senior citizens compare Fixed Deposit (FD) rates easily. The AI agent utilizes Google's Gemini model for answering queries and fetches real-time FD rates from Google Sheets. It supports multilingual queries and responds accordingly.
+Our Model is an AI-powered assistant designed to help senior citizens compare Fixed Deposit (FD) rates easily. The AI agent utilizes Google's Gemini model for answering queries and fetches real-time FD rates from Google Sheets. It supports multilingual queries and responds accordingly.
 
 ## Features
 - **FD Rate Comparison**: Retrieves and compares FD rates for senior citizens from a Google Sheet.
