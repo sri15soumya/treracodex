@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senior FD Assistant - Multilingual</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2A5C99;
+            --secondary: #FFA630;
+            --light: #F7F9FC;
+            --dark: #333333;
+            --success: #4CAF50;
+            --text-large: 1.25rem;
+            --text-xlarge: 1.5rem;
+            --text-xxlarge: 2rem;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #f0f4f8;
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: var(--text-xxlarge);
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: var(--text-large);
+            opacity: 0.9;
+        }
+        
+        .language-selector {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+        }
+        
+        #language {
+            padding: 8px 12px;
+            border-radius: 5px;
+            border: none;
+            font-size: 1rem;
+        }
+        
+        .main-content {
+            padding: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 30px;
+        }
+        
+        label {
+            display: block;
+            font-size: var(--text-large);
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        #query {
+            width: 100%;
+            padding: 20px;
+            font-size: var(--text-large);
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        
+        #query:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(42, 92, 153, 0.2);
+        }
+        
+        #getResponse {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 18px 30px;
+            font-size: var(--text-large);
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        #getResponse:hover {
+            background-color: #e69528;
+            transform: translateY(-2px);
+        }
+        
+        #getResponse:active {
+            transform: translateY(0);
+        }
+        
+        .result-container {
+            margin-top: 30px;
+            border-top: 2px solid #eee;
+            padding-top: 30px;
+        }
+        
+        .result-title {
+            font-size: var(--text-xlarge);
+            color: var(--primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        #result {
+            background-color: var(--light);
+            padding: 25px;
+            border-radius: 10px;
+            font-size: var(--text-large);
+            line-height: 1.8;
+            min-height: 100px;
+        }
+        
+        .help-text {
+            font-size: 1.1rem;
+            color: #666;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .example-queries {
+            margin-top: 30px;
+        }
+        
+        .example-title {
+            font-size: var(--text-large);
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .examples {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .example-chip {
+            background-color: #e3eef9;
+            color: var(--primary);
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .example-chip:hover {
+            background-color: #d0e2f5;
+        }
+        
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                border-radius: 10px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .language-selector {
+                position: static;
+                margin-bottom: 15px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="language-selector">
+                <select id="language">
+                    <option value="en">English</option>
+                    <option value="hi">हिंदी (Hindi)</option>
+                    <option value="ta">தமிழ் (Tamil)</option>
+                    <option value="te">తెలుగు (Telugu)</option>
+                    <option value="bn">বাংলা (Bengali)</option>
+                    <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                </select>
+            </div>
+            <h1><i class="fas fa-robot"></i> <span id="header-title">Senior AI Assistant for Comparing FD Rates</span></h1>
+            <p class="subtitle" id="header-subtitle">Your friendly helper for any question</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="input-group">
+                <label id="query-label">What would you like to know?</label>
+                <input type="text" id="query" placeholder="Type your question here..." autofocus>
+                <button id="getResponse">
+                    <i class="fas fa-paper-plane"></i> <span id="button-text">Get Answer</span>
+                </button>
+            </div>
+            
+            <div class="example-queries">
+                <div class="example-title" id="examples-title">Try asking:</div>
+                <div class="examples" id="example-chips">
+                    <!-- Will be filled by JavaScript -->
+                </div>
+            </div>
+            
+            <div class="result-container">
+                <div class="result-title">
+                    <i class="fas fa-comment-alt"></i> <span id="result-title">Answer</span>
+                </div>
+                <div id="result">Your answer will appear here...</div>
+            </div>
+            
+            <p class="help-text">
+                <i class="fas fa-info-circle"></i> <span id="help-text">Speak clearly and ask one question at a time for best results</span>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Language content
+        const translations = {
+            en: {
+                title: "Senior AI Assistant for Comparing FD Rates",
+                subtitle: "Your friendly helper for any question",
+                queryLabel: "What would you like to know?",
+                queryPlaceholder: "Type your question here...",
+                buttonText: "Get Answer",
+                examplesTitle: "Try asking:",
+                exampleChips: [
+                    "What is the best senior citizen FD rate for 1-2 years?",
+                    "What is FD rate?",
+                    "Best FD-Rate for 1-2 years",
+                    "Highest FD rate offered by ICICI Bank?"
+                ],
+                resultTitle: "Answer",
+                helpText: "Speak clearly and ask one question at a time for best results",
+                loadingText: "Thinking...",
+                defaultResult: "Your answer will appear here...",
+                emptyQueryAlert: "Please enter a question first",
+                errorMessage: "Sorry, there was an error. Please try again later."
+            },
+            hi: {
+                title: "एफडी दरों की तुलना के लिए वरिष्ठ सहायक",
+                subtitle: "किसी भी प्रश्न के लिए आपकी मित्रवत सहायक",
+                queryLabel: "आप क्या जानना चाहते हैं?",
+                queryPlaceholder: "अपना प्रश्न यहाँ टाइप करें...",
+                buttonText: "उत्तर प्राप्त करें",
+                examplesTitle: "इस तरह पूछने का प्रयास करें:",
+                exampleChips: [
+                    "1-2 साल के लिए सर्वश्रेष्ठ वरिष्ठ नागरिक एफडी दर क्या है?",
+                    "एफडी दर क्या है?",
+                    "1-2 साल के लिए सर्वश्रेष्ठ एफडी दर",
+                    "आईसीआईसीआई बैंक द्वारा दी जाने वाली सबसे अधिक एफडी दर?"
+                ],
+                resultTitle: "उत्तर",
+                helpText: "स्पष्ट बोलें और एक समय में एक प्रश्न पूछें",
+                loadingText: "सोच रहा हूँ...",
+                defaultResult: "आपका उत्तर यहां दिखाई देगा...",
+                emptyQueryAlert: "कृपया पहले एक प्रश्न दर्ज करें",
+                errorMessage: "क्षमा करें, एक त्रुटि हुई। कृपया बाद में पुनः प्रयास करें।"
+            },
+            ta: {
+                title: "FD விகிதங்களை ஒப்பிடுவதற்கான மூத்த உதவியாளர்",
+                subtitle: "எந்தவொரு கேள்விக்கும் உங்கள் நட்பு உதவியாளர்",
+                queryLabel: "நீங்கள் என்ன தெரிந்து கொள்ள விரும்புகிறீர்கள்?",
+                queryPlaceholder: "உங்கள் கேள்வியை இங்கே தட்டச்சு செய்க...",
+                buttonText: "பதில் பெறு",
+                examplesTitle: "இவ்வாறு கேட்க முயற்சிக்கவும்:",
+                exampleChips: [
+                    "1-2 ஆண்டுகளுக்கு சிறந்த மூத்த குடிமக்கள் FD விகிதம் என்ன?",
+                    "FD விகிதம் என்றால் என்ன?",
+                    "1-2 ஆண்டுகளுக்கு சிறந்த FD விகிதம்",
+                    "ஐசிஐசிஐ வங்கி வழங்கும் அதிக FD விகிதம்?"
+                ],
+                resultTitle: "பதில்",
+                helpText: "தெளிவாக பேசி ஒரு நேரத்தில் ஒரு கேள்வியை கேளுங்கள்",
+                loadingText: "சிந்திக்கிறது...",
+                defaultResult: "உங்கள் பதில் இங்கே தோன்றும்...",
+                emptyQueryAlert: "முதலில் ஒரு கேள்வியை உள்ளிடவும்",
+                errorMessage: "மன்னிக்கவும், ஒரு பிழை ஏற்பட்டது. பிறகு முயற்சிக்கவும்."
+            },
+            te: {
+                title: "FD రేట్లను పోల్చడానికి సీనియర్ సహాయకుడు",
+                subtitle: "ఏదైనా ప్రశ్నకు మీ స్నేహపూర్వక సహాయకుడు",
+                queryLabel: "మీరు ఏమి తెలుసుకోవాలనుకుంటున్నారు?",
+                queryPlaceholder: "మీ ప్రశ్నను ఇక్కడ టైప్ చేయండి...",
+                buttonText: "సమాధానం పొందండి",
+                examplesTitle: "ఇలా అడగడానికి ప్రయత్నించండి:",
+                exampleChips: [
+                    "1-2 సంవత్సరాలకు ఉత్తమ సీనియర్ సిటిజన్ FD రేటు ఏమిటి?",
+                    "FD రేటు అంటే ఏమిటి?",
+                    "1-2 సంవత్సరాలకు ఉత్తమ FD రేటు",
+                    "ICICI బ్యాంకు అందించే అత్యధిక FD రేటు?"
+                ],
+                resultTitle: "సమాధానం",
+                helpText: "స్పష్టంగా మాట్లాడండి మరియు ఒక సమయంలో ఒక ప్రశ్నను అడగండి",
+                loadingText: "ఆలోచిస్తోంది...",
+                defaultResult: "మీ సమాధానం ఇక్కడ కనిపిస్తుంది...",
+                emptyQueryAlert: "దయచేసి మొదట ఒక ప్రశ్నను నమోదు చేయండి",
+                errorMessage: "క్షమించండి, ఒక లోపం సంభవించింది. దయచేసి తర్వాత మళ్లీ ప్రయత్నించండి."
+            },
+            bn: {
+                title: "FD রেট তুলনা করার জন্য সিনিয়র সহকারী",
+                subtitle: "যে কোনো প্রশ্নের জন্য আপনার বন্ধুত্বপূর্ণ সহায়ক",
+                queryLabel: "আপনি কি জানতে চান?",
+                queryPlaceholder: "আপনার প্রশ্ন এখানে টাইপ করুন...",
+                buttonText: "উত্তর পান",
+                examplesTitle: "এভাবে জিজ্ঞাসা করার চেষ্টা করুন:",
+                exampleChips: [
+                    "1-2 বছরের জন্য সেরা সিনিয়র সিটিজেন FD রেট কি?",
+                    "FD রেট কি?",
+                    "1-2 বছরের জন্য সেরা FD রেট",
+                    "ICICI ব্যাঙ্ক দ্বারা দেওয়া সর্বোচ্চ FD রেট?"
+                ],
+                resultTitle: "উত্তর",
+                helpText: "স্পষ্টভাবে বলুন এবং একবারে একটি প্রশ্ন জিজ্ঞাসা করুন",
+                loadingText: "চিন্তা করছি...",
+                defaultResult: "আপনার উত্তর এখানে প্রদর্শিত হবে...",
+                emptyQueryAlert: "অনুগ্রহ করে প্রথমে একটি প্রশ্ন লিখুন",
+                errorMessage: "দুঃখিত, একটি ত্রুটি হয়েছে। অনুগ্রহ করে পরে আবার চেষ্টা করুন।"
+            },
+            kn: {
+                title: "FD ದರಗಳನ್ನು ಹೋಲಿಸಲು ಹಿರಿಯ ಸಹಾಯಕ",
+                subtitle: "ಯಾವುದೇ ಪ್ರಶ್ನೆಗೆ ನಿಮ್ಮ ಸ್ನೇಹಪರ ಸಹಾಯಕ",
+                queryLabel: "ನೀವು ಏನು ತಿಳಿದುಕೊಳ್ಳಲು ಬಯಸುತ್ತೀರಿ?",
+                queryPlaceholder: "ನಿಮ್ಮ ಪ್ರಶ್ನೆಯನ್ನು ಇಲ್ಲಿ ಟೈಪ್ ಮಾಡಿ...",
+                buttonText: "ಉತ್ತರ ಪಡೆಯಿರಿ",
+                examplesTitle: "ಈ ರೀತಿ ಕೇಳಲು ಪ್ರಯತ್ನಿಸಿ:",
+                exampleChips: [
+                    "1-2 ವರ್ಷಗಳಿಗೆ ಅತ್ಯುತ್ತಮ ಹಿರಿಯ ನಾಗರಿಕ FD ದರ ಯಾವುದು?",
+                    "FD ದರ ಎಂದರೇನು?",
+                    "1-2 ವರ್ಷಗಳಿಗೆ ಅತ್ಯುತ್ತಮ FD ದರ",
+                    "ICICI ಬ್ಯಾಂಕ್ ನೀಡುವ ಅತ್ಯಧಿಕ FD ದರ?"
+                ],
+                resultTitle: "ಉತ್ತರ",
+                helpText: "ಸ್ಪಷ್ಟವಾಗಿ ಮಾತನಾಡಿ ಮತ್ತು ಒಂದು ಸಮಯದಲ್ಲಿ ಒಂದು ಪ್ರಶ್ನೆಯನ್ನು ಕೇಳಿ",
+                loadingText: "ಯೋಚಿಸುತ್ತಿದೆ...",
+                defaultResult: "ನಿಮ್ಮ ಉತ್ತರ ಇಲ್ಲಿ ಕಾಣಿಸುತ್ತದೆ...",
+                emptyQueryAlert: "ದಯವಿಟ್ಟು ಮೊದಲು ಒಂದು ಪ್ರಶ್ನೆಯನ್ನು ನಮೂದಿಸಿ",
+                errorMessage: "ಕ್ಷಮಿಸಿ, ದೋಷ ಸಂಭವಿಸಿದೆ. ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+            }
+        };
+
+        // Set initial language
+        let currentLanguage = 'en';
+        
+        // DOM elements
+        const languageSelector = document.getElementById('language');
+        const headerTitle = document.getElementById('header-title');
+        const headerSubtitle = document.getElementById('header-subtitle');
+        const queryLabel = document.getElementById('query-label');
+        const queryInput = document.getElementById('query');
+        const buttonText = document.getElementById('button-text');
+        const examplesTitle = document.getElementById('examples-title');
+        const exampleChipsContainer = document.getElementById('example-chips');
+        const resultTitle = document.getElementById('result-title');
+        const helpText = document.getElementById('help-text');
+        const resultDiv = document.getElementById('result');
+        
+        // Function to update UI based on selected language
+        function updateLanguage(lang) {
+            currentLanguage = lang;
+            const translation = translations[lang];
+            
+            // Update all text elements
+            headerTitle.textContent = translation.title;
+            headerSubtitle.textContent = translation.subtitle;
+            queryLabel.textContent = translation.queryLabel;
+            queryInput.placeholder = translation.queryPlaceholder;
+            buttonText.textContent = translation.buttonText;
+            examplesTitle.textContent = translation.examplesTitle;
+            resultTitle.textContent = translation.resultTitle;
+            helpText.textContent = translation.helpText;
+            resultDiv.textContent = translation.defaultResult;
+            
+            // Update example chips
+            exampleChipsContainer.innerHTML = '';
+            translation.exampleChips.forEach(chipText => {
+                const chip = document.createElement('div');
+                chip.className = 'example-chip';
+                chip.textContent = chipText;
+                chip.addEventListener('click', () => {
+                    queryInput.value = chipText;
+                    queryInput.focus();
+                });
+                exampleChipsContainer.appendChild(chip);
+            });
+        }
+        
+        // Language selector event
+        languageSelector.addEventListener('change', (e) => {
+            updateLanguage(e.target.value);
+        });
+        
+        // Initialize with English
+        updateLanguage('en');
+        
+        // Query submission
+        document.getElementById("getResponse").addEventListener("click", async function() {
+            let query = document.getElementById("query").value;
+            if (!query.trim()) {
+                alert(translations[currentLanguage].emptyQueryAlert);
+                return;
+            }
+            
+            // Show loading state
+            const button = document.getElementById("getResponse");
+            button.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${translations[currentLanguage].loadingText}`;
+            button.disabled = true;
+            
+            try {
+                let response = await fetch("http://127.0.0.1:5000/ask", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ 
+                        query: query,
+                        language: currentLanguage 
+                    })
+                });
+
+                let result = await response.json();
+                document.getElementById("result").innerText = result.response || translations[currentLanguage].errorMessage;
+            } catch (error) {
+                document.getElementById("result").innerText = translations[currentLanguage].errorMessage;
+                console.error("Error:", error);
+            } finally {
+                // Reset button
+                button.innerHTML = `<i class="fas fa-paper-plane"></i> ${translations[currentLanguage].buttonText}`;
+                button.disabled = false;
+            }
+        });
+        
+        // Allow pressing Enter in the input field to submit
+        document.getElementById('query').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('getResponse').click();
+            }
+        });
+    </script>
+</body>
+</html>
